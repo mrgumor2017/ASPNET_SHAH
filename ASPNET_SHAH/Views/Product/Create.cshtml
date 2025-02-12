@@ -1,0 +1,43 @@
+﻿@model Product
+
+<div style="width: 50%; margin: 20px auto; background-color: lightgoldenrodyellow; border-radius: 5px; padding: 20px; border: 2px solid black;">
+    <h1 style="text-align: center;">Створення нового продукту</h1>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Назва</label>
+            <input type="text" class="form-control" asp-for="Name" required>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Опис</label>
+            <textarea class="form-control" asp-for="Description" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Ціна</label>
+            <input type="number" class="form-control" asp-for="Price" step="0.01" min="0" required>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Amount" class="form-label">Кількість</label>
+            <input type="number" class="form-control" asp-for="Amount" min="0" required>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Image" class="form-label">Зображення (URL)</label>
+            <input type="text" class="form-control" asp-for="Image">
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">Категорія</label>
+            <select class="form-select" asp-for="CategoryId" asp-items="ViewBag.Categories">
+                <option value="">Оберіть категорію</option>
+            </select>
+        </div>
+
+        <div style="text-align: center; padding-top: 10px;">
+            <input type="submit" value="Створити" class="btn btn-success" />
+            <a class="btn btn-dark" asp-action="Index">Повернутися</a>
+        </div>
+    </form>
+</div>

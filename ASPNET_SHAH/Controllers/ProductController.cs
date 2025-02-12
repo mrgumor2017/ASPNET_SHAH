@@ -1,14 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ASPNET_SHAH.Data;
+using ASPNET_SHAH.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASPNET_SHAH.Controllers
 {
     public class ProductController : Controller
     {
-        // GET: ProductController
+        private readonly AppDBContext _dbContext;
+        public ProductController(AppDBContext context)
+        {
+            _dbContext = context;
+        }
         public ActionResult Index()
         {
-            return View();
+            var products = _dbContext.Products.AsEnumerable();
+
+            return View(products);
         }
 
         // GET: ProductController/Details/5
@@ -20,64 +29,98 @@ namespace ASPNET_SHAH.Controllers
         // GET: ProductController/Create
         public ActionResult Create()
         {
+            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name");
             return View();
         }
 
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Product model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name");
+                return View(model);
             }
-            catch
-            {
-                return View();
-            }
+
+            model.Id = Guid.NewGuid().ToString();
+            _dbContext.Products.Add(model);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // GET: ProductController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View();
+            var product = _dbContext.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", product.CategoryId);
+            return View(product);
         }
 
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(string id, Product model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
             }
-            catch
+
+            var product = _dbContext.Products.Find(id);
+            if (product == null)
             {
-                return View();
+                return NotFound();
             }
+
+            product.Name = model.Name;
+            product.Description = model.Description;
+            product.Price = model.Price;
+            product.Amount = model.Amount;
+            product.Image = model.Image;
+            product.CategoryId = model.CategoryId;
+
+            _dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
+
         // GET: ProductController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            var product = _dbContext.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
         }
 
         // POST: ProductController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult DeleteConfirmed(string id)
         {
-            try
+            var product = _dbContext.Products.Find(id);
+            if (product == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+
+            _dbContext.Products.Remove(product);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
+
     }
 }

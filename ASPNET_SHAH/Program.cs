@@ -1,7 +1,16 @@
+using ASPNET_SHAH.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Add database
+builder.Services.AddDbContext<AppDBContext>(options =>
+{
+    options.UseSqlServer("name=SqlServerLocal");
+});   
 
 var app = builder.Build();
 

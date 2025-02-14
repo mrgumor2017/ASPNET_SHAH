@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Category>
 
 <div style="display: flex">
-    <h1>Categories</h1>
+    <h1>Категорії</h1>
     <div style="flex-grow: 1; text-align: end">
         <a class="btn btn-dark" asp-action="Create">Додати категорію</a>
     </div>
@@ -13,6 +13,7 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,10 @@
                 <tr>
                     <td>@category.Id</td>
                     <td>@category.Name</td>
+                    <td>
+                        <a asp-action="Update" asp-route-id="@category.Id" class="btn btn-info">Редагувати</a>
+                        <a asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger">Видалити</a>
+                    </td>
                 </tr>
             }
         </tbody>

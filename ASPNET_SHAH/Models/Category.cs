@@ -6,9 +6,10 @@ namespace ASPNET_SHAH.Models
     {
         [Key]
         public string Id { get; set; }
+
         [Required, MaxLength(100)]
         public string Name { get; set; }
 
-        public List<Product> Product { get; set; } = [];
+        public List<Product> Product { get; set; } = new List<Product>();
     }
 }
